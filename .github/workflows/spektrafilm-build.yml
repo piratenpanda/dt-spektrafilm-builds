@@ -136,6 +136,8 @@ jobs:
       - name: Update Lensfun data
         run: sudo lensfun-update-data
       - name: Build AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd src
           bash tools/appimage-build-script.sh
