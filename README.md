@@ -6,26 +6,26 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260730-036ba03
+**Latest version:** 20260801-27b5243
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260730-036ba03-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260730-036ba03-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260730-036ba03-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260730-036ba03-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260730-036ba03-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260730-036ba03-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260730-036ba03-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260730-036ba03-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260730-036ba03-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260730-036ba03-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260801-27b5243-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260801-27b5243-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260801-27b5243-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260801-27b5243-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260801-27b5243-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260801-27b5243-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260801-27b5243-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260801-27b5243-arm64.dmg) |
+| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260801-27b5243-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260801-27b5243-x86_64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-07-29 | [036ba03](https://github.com/Arecsu/darktable/commit/036ba03) | piratenpanda | move to float16 LUT as reference, fix grain opencl path again, fix diffusion filters and clarify scatter |
-| 2026-07-27 | [2d832d6](https://github.com/Arecsu/darktable/commit/2d832d6) | piratenpanda | Reset module to v1, remove special checkbox handling as this is now a proper bauhaus widget, add blank lines between routined, use GList where necessary, use dt_hash(), add underscore prefex to static routines |
-| 2026-07-27 | [bd2b5ab](https://github.com/Arecsu/darktable/commit/bd2b5ab) | piratenpanda | follow the Bauhaus checkbox changes |
-| 2026-07-26 | [92ff3a5](https://github.com/Arecsu/darktable/commit/92ff3a5) | piratenpanda | limit DIR coupler range to 1 to keep it invertible |
+| 2026-08-01 | [27b5243](https://github.com/Arecsu/darktable/commit/27b5243) | Arecsu | spektrafilm: run grain USM on absolute density to match reference |
+| 2026-08-01 | [f58985b](https://github.com/Arecsu/darktable/commit/f58985b) | piratenpanda | blur whole grained desity field and not only delta to match reference and avoid oversharpening |
+| 2026-07-29 | [194f9e1](https://github.com/Arecsu/darktable/commit/194f9e1) | yuri | fix(ui): add spektrafilm to modules list |
+| 2026-07-31 | [0dad59a](https://github.com/Arecsu/darktable/commit/0dad59a) | piratenpanda | Updates to user feedback |
 
 ## Required: Film & Print Data Pack
 
