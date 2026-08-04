@@ -29,4 +29,20 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 ## Data pack
 
-The module downloads the spectral data pack it needs automatically. First enable **Preferences → Security → "allow spektrafilm to download data packs"**, then open the spektrafilm module on an image and click **"download data pack"** when it appears. Every file is verified against a checksum from the repository manifest before install, and downloaded packs are written to the `spektrafilm/packs` subfolder of your darktable config directory, so they are backed up with the rest of your configuration.
+The module downloads the data pack it needs automatically — no manual download or extraction.
+
+**Upgrading from an older build?** If you previously installed the data pack by hand, delete the old `spektrafilm` folder from your darktable config directory first:
+
+| Platform | Folder to delete |
+|----------|------------------|
+| Linux | `~/.config/darktable/spektrafilm/` |
+| macOS | `~/Library/Application Support/darktable/spektrafilm/` |
+| Windows | `%APPDATA%\darktable\spektrafilm\` |
+
+Not sure where your config directory is? Look for the folder that contains `darktablerc`.
+
+Then:
+
+1. Enable **Preferences → Security → "allow spektrafilm to download data packs"**.
+2. **Restart darktable** — the setting only takes effect after a restart.
+3. Open the spektrafilm module on a photo. If a data pack is missing, a **"download data pack"** button appears — click it and the module fetches everything it needs, verifying the download before it's used.
