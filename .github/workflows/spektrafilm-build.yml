@@ -448,27 +448,9 @@ jobs:
           |------|--------|--------|---------|
           ${COMMITS}
 
-          ## Required: Film & Print Data Pack
+          ## Data pack
 
-          Download the [spektrafilm-data-pack.zip](https://github.com/${OWNER}/${REPO}/raw/main/spektrafilm-data-pack.zip) and extract it **anywhere** — you'll get a \`spektrafilm/\` folder. Then move or copy that folder into your darktable config directory:
-
-          | Platform | Darktable config directory |
-          |----------|---------------------------|
-          | Linux | \`~/.config/darktable/\` |
-          | macOS | \`~/Library/Application Support/darktable/\` |
-          | Windows | \`%APPDATA%\\darktable\\\` |
-
-          The final structure should look like this:
-
-          \`\`\`
-          spektrafilm/
-          ├── pack.json
-          ├── spectra_lut.f32
-          └── profiles/
-              ├── kodak_portra_400.json
-              ├── fujifilm_velvia_100.json
-              └── ...
-          \`\`\`
+          The module downloads the spectral data pack it needs automatically. First enable **Preferences → Security → "allow spektrafilm to download data packs"**, then open the spektrafilm module on an image and click **"download data pack"** when it appears. Every file is verified against a checksum from the repository manifest before install, and downloaded packs are written to the \`spektrafilm/packs\` subfolder of your darktable config directory, so they are backed up with the rest of your configuration.
           READMEEOF
       - name: Store last-built commit SHA
         run: |
