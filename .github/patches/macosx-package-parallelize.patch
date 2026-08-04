@@ -29,8 +29,13 @@ index dfe84ae..22ebfef 100755
  
  # Add gtk files
  cp defaults.list "$dtResourcesDir"/share/applications/
-@@ -344,10 +347,10 @@ cp -L "$homebrewHome"/share/themes/Mac/gtk-3.0/gtk-keys.css "$dtResourcesDir"/sh
+@@ -344,10 +347,15 @@ cp -L "$homebrewHome"/share/themes/Mac/gtk-3.0/gtk-keys.css "$dtResourcesDir"/sh
  # Sign app bundle
++# Homebrew installs some files read-only (e.g. ImageMagick's configure.xml
++# is 0444). codesign --force needs write access even for generic (non-Mach-O)
++# files, so make the staged library writable first -- the serial find loop
++# used to swallow this failure silently; the parallel xargs loop must not.
++chmod -R u+w ${dtWorkingDir}/Contents/Resources/lib
  if [ -n "$CODECERT" ]; then
      # Use certificate if one has been provided
 -    find ${dtWorkingDir}/Contents/Resources/lib -type f -exec codesign --verbose --force --options runtime -i "org.darktable" -s "${CODECERT}" \{} \;
