@@ -35,6 +35,7 @@ If you are upgrading from an older build, delete the `spektrafilm` folder from y
 |----------|------------------|
 | Linux | `~/.config/darktable/spektrafilm/` |
 | macOS | `~/Library/Application Support/darktable/spektrafilm/` |
+| macOS | `~/.config/darktable/spektrafilm/` |
 | Windows | `%APPDATA%\darktable\spektrafilm\` |
 
 Then:

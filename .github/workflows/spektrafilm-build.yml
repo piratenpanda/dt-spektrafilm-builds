@@ -456,6 +456,7 @@ jobs:
           |----------|------------------|
           | Linux | \`~/.config/darktable/spektrafilm/\` |
           | macOS | \`~/Library/Application Support/darktable/spektrafilm/\` |
+          | macOS | \`~/.config/darktable/spektrafilm/\` |
           | Windows | \`%APPDATA%\darktable\spektrafilm\\\` |
 
           Then:
