@@ -320,6 +320,13 @@ jobs:
           cmake -E make_directory "${BUILD_DIR}"
           cmake -E make_directory "${INSTALL_PREFIX}"
           ./src/.ci/ci-script.sh
+      - uses: actions/checkout@v7
+        with:
+          path: workflow
+      - name: Apply macOS packaging speedup patch
+        run: |
+          patch -p1 -d src -N < "${{ github.workspace }}/workflow/.github/patches/macosx-package-parallelize.patch" \
+            || echo "::warning::Speedup patch skipped (already applied or upstream drifted); packaging runs unpatched"
       - name: Build macOS package
         run: ./src/packaging/macosx/3_make_hb_darktable_package.sh
       - name: Create DMG

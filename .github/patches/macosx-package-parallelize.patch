@@ -1,0 +1,44 @@
+diff --git a/packaging/macosx/3_make_hb_darktable_package.sh b/packaging/macosx/3_make_hb_darktable_package.sh
+index dfe84ae..22ebfef 100755
+--- a/packaging/macosx/3_make_hb_darktable_package.sh
++++ b/packaging/macosx/3_make_hb_darktable_package.sh
+@@ -27,6 +27,7 @@ dtResourcesDir="$dtWorkingDir"/Contents/Resources
+ dtExecDir="$dtWorkingDir"/Contents/MacOS
+ dtExecutables=$(echo "$dtExecDir"/darktable{,-chart,-cli,-cltest,-generate-cache,-rs-identify,-curve-tool,-noiseprofile})
+ homebrewHome=$(brew --prefix)
++parallelism=$(sysctl -n hw.ncpu)
+ 
+ # Extract darktable version number and commit
+ dt_version_full=$(cat ../../build/bin/version_gen.c | grep darktable_package_version | cut -d'"' -f2)
+@@ -325,11 +326,13 @@ done
+ dtExecFiles="$dtExecutables"
+ dtExecFiles+=" "
+ dtExecFiles+=$(find -E "$dtResourcesDir"/lib -regex '.*\.(so|dylib)')
+-for dtExecFile in $dtExecFiles; do
+-    if [[ -f "$dtExecFile" ]]; then
+-        reset_exec_path "$dtExecFile"
+-    fi
+-done
++# reset_exec_path only rewrites the file it is given (install_name_tool/otool
++# never touch other files), so the per-file work can run in parallel. This loop
++# spawns one otool and one install_name_tool process per dependency and is the
++# slowest part of packaging, especially on slower (Intel) runners.
++export -f reset_exec_path
++export dtResourcesDir homebrewHome
++echo "$dtExecFiles" | xargs -n 1 -P "$parallelism" bash -c 'if [[ -f "$1" ]]; then reset_exec_path "$1"; fi' _
+ 
+ # Add gtk files
+ cp defaults.list "$dtResourcesDir"/share/applications/
+@@ -344,10 +347,10 @@ cp -L "$homebrewHome"/share/themes/Mac/gtk-3.0/gtk-keys.css "$dtResourcesDir"/sh
+ # Sign app bundle
+ if [ -n "$CODECERT" ]; then
+     # Use certificate if one has been provided
+-    find ${dtWorkingDir}/Contents/Resources/lib -type f -exec codesign --verbose --force --options runtime -i "org.darktable" -s "${CODECERT}" \{} \;
++    find ${dtWorkingDir}/Contents/Resources/lib -type f -print0 | xargs -0 -n 1 -P "$parallelism" codesign --verbose --force --options runtime -i "org.darktable" -s "${CODECERT}"
+     codesign --deep --verbose --force --options runtime -i "org.darktable" -s "${CODECERT}" ${dtWorkingDir}
+ else
+     # Use ad-hoc signing and preserve metadata
+-    find ${dtWorkingDir}/Contents/Resources/lib -type f -exec codesign --verbose --force --preserve-metadata=entitlements,requirements,flags,runtime -i "org.darktable" -s - \{} \;
++    find ${dtWorkingDir}/Contents/Resources/lib -type f -print0 | xargs -0 -n 1 -P "$parallelism" codesign --verbose --force --preserve-metadata=entitlements,requirements,flags,runtime -i "org.darktable" -s -
+     codesign --deep --verbose --force --preserve-metadata=entitlements,requirements,flags,runtime -i "org.darktable" -s - ${dtWorkingDir}
+ fi
