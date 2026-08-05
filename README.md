@@ -6,26 +6,26 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260804-f95c05e
+**Latest version:** 20260805-18a220c
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260804-f95c05e-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260804-f95c05e-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260804-f95c05e-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260804-f95c05e-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260804-f95c05e-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260804-f95c05e-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260804-f95c05e-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260804-f95c05e-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260804-f95c05e-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260804-f95c05e-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260805-18a220c-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260805-18a220c-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260805-18a220c-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260805-18a220c-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-arm64.dmg) |
+| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260805-18a220c-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-x86_64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-08-04 | [f95c05e](https://github.com/Arecsu/darktable/commit/f95c05e) | piratenpanda | fix opencl for more than one opencl runtime |
-| 2026-08-04 | [ec8d3b7](https://github.com/Arecsu/darktable/commit/ec8d3b7) | piratenpanda | add surface adaptation code |
-| 2026-08-03 | [59c2dee](https://github.com/Arecsu/darktable/commit/59c2dee) | piratenpanda | support pack v2 files, fix Tri-X column layout to follow upstream spektrafilM |
-| 2026-08-03 | [4631a17](https://github.com/Arecsu/darktable/commit/4631a17) | piratenpanda | move to inline labels again for film, paper and format. Soft limit preflash range to 0.5 |
+| 2026-08-05 | [18a220c](https://github.com/Arecsu/darktable/commit/18a220c) | Arecsu | gtk4-prep: open module header menus on button release |
+| 2026-08-05 | [fbdee84](https://github.com/Arecsu/darktable/commit/fbdee84) | Arecsu | gtk4-prep: restore right- and middle-click handling to gesture handlers |
+| 2026-08-05 | [d975333](https://github.com/Arecsu/darktable/commit/d975333) | Arecsu | gtk4-prep: keep darkroom module header buttons visible only while hovering |
+| 2026-08-05 | [45af0f4](https://github.com/Arecsu/darktable/commit/45af0f4) | piratenpanda | remove references to the reference |
 
 ## Data pack
 
