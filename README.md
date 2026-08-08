@@ -6,26 +6,26 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260805-18a220c
+**Latest version:** 20260808-e363fc9
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260805-18a220c-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260805-18a220c-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260805-18a220c-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260805-18a220c-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260805-18a220c-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260805-18a220c-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260808-e363fc9-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260808-e363fc9-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260808-e363fc9-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260808-e363fc9-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260808-e363fc9-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260808-e363fc9-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260808-e363fc9-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260808-e363fc9-arm64.dmg) |
+| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260808-e363fc9-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260808-e363fc9-x86_64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-08-05 | [18a220c](https://github.com/Arecsu/darktable/commit/18a220c) | Arecsu | gtk4-prep: open module header menus on button release |
-| 2026-08-05 | [fbdee84](https://github.com/Arecsu/darktable/commit/fbdee84) | Arecsu | gtk4-prep: restore right- and middle-click handling to gesture handlers |
-| 2026-08-05 | [d975333](https://github.com/Arecsu/darktable/commit/d975333) | Arecsu | gtk4-prep: keep darkroom module header buttons visible only while hovering |
-| 2026-08-05 | [45af0f4](https://github.com/Arecsu/darktable/commit/45af0f4) | piratenpanda | remove references to the reference |
+| 2026-08-08 | [e363fc9](https://github.com/Arecsu/darktable/commit/e363fc9) | piratenpanda | remove patch file |
+| 2026-08-08 | [c38de49](https://github.com/Arecsu/darktable/commit/c38de49) | piratenpanda | port unit test suite from reference |
+| 2026-08-05 | [23d82ce](https://github.com/Arecsu/darktable/commit/23d82ce) | piratenpanda | remove references to the reference |
+| 2026-08-05 | [6214c5e](https://github.com/Arecsu/darktable/commit/6214c5e) | piratenpanda | add switch for bandwidth adaption and rename section to advanced |
 
 ## Data pack
 
