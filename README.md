@@ -6,26 +6,26 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260810-a19ac8d
+**Latest version:** 20260821-6545711
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260810-a19ac8d-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260810-a19ac8d-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260810-a19ac8d-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260810-a19ac8d-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260810-a19ac8d-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260810-a19ac8d-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260810-a19ac8d-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260810-a19ac8d-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260810-a19ac8d-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260810-a19ac8d-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260821-6545711-x86_64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260821-6545711-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260821-6545711-aarch64.AppImage](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260821-6545711-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260821-6545711-x86_64.exe](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260821-6545711-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260821-6545711-arm64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260821-6545711-arm64.dmg) |
+| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260821-6545711-x86_64.dmg](https://github.com/Arecsu/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260821-6545711-x86_64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-08-08 | [a19ac8d](https://github.com/Arecsu/darktable/commit/a19ac8d) | piratenpanda | remove patch file |
-| 2026-08-08 | [cf33a22](https://github.com/Arecsu/darktable/commit/cf33a22) | piratenpanda | port unit test suite from reference |
-| 2026-08-05 | [cb1e972](https://github.com/Arecsu/darktable/commit/cb1e972) | piratenpanda | remove references to the reference |
-| 2026-08-05 | [3ae8bb5](https://github.com/Arecsu/darktable/commit/3ae8bb5) | piratenpanda | add switch for bandwidth adaption and rename section to advanced |
+| 2026-08-08 | [6545711](https://github.com/Arecsu/darktable/commit/6545711) | piratenpanda | remove patch file |
+| 2026-08-08 | [5b47563](https://github.com/Arecsu/darktable/commit/5b47563) | piratenpanda | port unit test suite from reference |
+| 2026-08-05 | [1c6ceff](https://github.com/Arecsu/darktable/commit/1c6ceff) | piratenpanda | remove references to the reference |
+| 2026-08-05 | [80990be](https://github.com/Arecsu/darktable/commit/80990be) | piratenpanda | add switch for bandwidth adaption and rename section to advanced |
 
 ## Data pack
 
