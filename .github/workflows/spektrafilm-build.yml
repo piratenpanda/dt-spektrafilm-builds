@@ -8,8 +8,8 @@ permissions:
   actions: write
 
 env:
-  SOURCE_REPO: Arecsu/darktable
-  SOURCE_BRANCH: spektrafilm-draft
+  SOURCE_REPO: piratenpanda/darktable
+  SOURCE_BRANCH: spektrafilm
   RELEASE_TAG: spektrafilm-builds
 
 jobs:
