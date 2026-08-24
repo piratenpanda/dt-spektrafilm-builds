@@ -1,6 +1,6 @@
 # Darktable Spektrafilm — Builds
 
- Automated builds from the [spektrafilm-draft](https://github.com/piratenpanda/darktable/tree/spektrafilm-draft) branch.
+ Automated builds from the [spektrafilm](https://github.com/piratenpanda/darktable/tree/spektrafilm) branch.
 
 Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](https://discuss.pixls.us/t/spektrafilm-darktable-module-implementation-discussion/58744)
 
