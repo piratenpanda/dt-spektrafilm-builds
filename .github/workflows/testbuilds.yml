@@ -20,7 +20,6 @@ env:
   SOURCE_BRANCH: spektrafilm
   RELEASE_TAG: spektrafilm-builds
   UPSTREAM_REPO: darktable-org/darktable
-  PROBE_TAG: perf-probe-macos
 
 jobs:
   # ============================================================
@@ -511,6 +510,10 @@ jobs:
   # also happens to contain the gtk4-prep event-controller sweep
   # (merge a62beee1c5), so a regression showing up between B and
   # C points at input handling rather than at the pixelpipe.
+  #
+  # This mode only uploads DMGs as workflow artifacts. It creates
+  # no release and no tag, and never commits to the repository,
+  # so README.md and last-built.sha are left untouched.
   # ============================================================
   perf-probe:
     if: inputs.mode == 'perf-probe'
@@ -598,62 +601,26 @@ jobs:
           path: ${{ env.INSTALL_PREFIX }}/darktable-perfprobe-*.dmg
           name: artifact-perfprobe-${{ matrix.point.label }}
           retention-days: 7
-
-  # ============================================================
-  # Publish the perf probe DMGs under their own release tag so
-  # testers without a GitHub account can download them
-  # ============================================================
-  perf-probe-publish:
-    if: inputs.mode == 'perf-probe'
-    needs: [perf-probe]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v8
-      - name: Flatten artifacts
+      - name: Write testing notes to the run summary
+        if: always()
         run: |
-          mkdir -p probe
-          find artifact-perfprobe-* -name '*.dmg' -exec cp {} probe/ \;
-          ls -la probe/
-      - name: Create/Update probe release
-        uses: ncipollo/release-action@v1.21.0
-        with:
-          tag: ${{ env.PROBE_TAG }}
-          allowUpdates: true
-          removeArtifacts: true
-          prerelease: true
-          artifactErrorsFailBuild: false
-          name: "macOS perf probe (stock darktable master)"
-          body: |
-            Four builds of **stock upstream darktable master** — no spektrafilm module, no other patches.
-            They bracket two commits suspected of degrading general darkroom responsiveness.
+          short=$(git -C src rev-parse --short HEAD 2>/dev/null || echo unknown)
+          cat >> "$GITHUB_STEP_SUMMARY" << EOF
+          ### ${{ matrix.point.label }} — \`${short}\`
 
-            | Build | Commit | What it is |
-            |-------|--------|------------|
-            | A | [`29b530df4d`](https://github.com/darktable-org/darktable/commit/29b530df4d43bba240245a322f0e9728780cf04b) | before the mask-cache memory gating |
-            | B | [`511949f50f`](https://github.com/darktable-org/darktable/commit/511949f50f16440000c6e787a6d726fe9754b9a7) | after it |
-            | C | [`b7dbf0c89a`](https://github.com/darktable-org/darktable/commit/b7dbf0c89a925a6dc52b0dbb51ac9ea36a28ae81) | before the OpenCL fast-tiling recalculation |
-            | D | [`41e2ba27bb`](https://github.com/darktable-org/darktable/commit/41e2ba27bbd7f6d7bdf54e0ada5d54be68d9ca63) | after it |
+          ${{ matrix.point.note }}
 
-            Test in order A → B → C → D and note where it turns bad:
+          Stock upstream master, no spektrafilm module. Run it from the mounted
+          DMG rather than copying to /Applications — all four probe builds contain
+          an app called \`darktable.app\` and would overwrite each other.
 
-            - bad from **B** onward → the distorted-mask caches are being disabled by the 6 GB `dt_get_available_mem()` threshold
-            - bad from **C** onward → not either target commit; the A..D span also contains the gtk4-prep event-controller sweep, so suspect input handling
-            - bad from **D** onward → the fast-tiling `per_line` / `dt_opencl_image_fits_device()` arithmetic
+          \`\`\`
+          /Volumes/darktable/darktable.app/Contents/MacOS/darktable \\
+            --configdir ~/dt-probe-config --library ~/dt-probe-config/library.db \\
+            -d perf -d pipe -d tiling -d opencl 2>&1 | tee ~/probe-${{ matrix.point.label }}.log
+          \`\`\`
 
-            **How to test**
-
-            Each DMG contains an app called `darktable.app`, so do not drag them all into `/Applications` — either run each straight from its mounted DMG, or copy them into four separate folders.
-
-            Keep them away from your real library:
-
-            ```
-            /Volumes/darktable/darktable.app/Contents/MacOS/darktable \
-              --configdir ~/dt-probe-config --library ~/dt-probe-config/library.db \
-              -d perf -d pipe -d tiling -d opencl 2>&1 | tee ~/probe-A.log
-            ```
-
-            Do the same edit on the same image in each build (open darkroom, pan, zoom, drag a slider), then attach the four logs. If build D logs `process tiled` where C logs `process`, that is the answer.
-
-            > **⚠️** These are unsigned test builds of an unstable branch. They will not open the spektrafilm module — that is expected, they are for isolating an upstream regression.
-          artifacts: |
-            probe/*.dmg
+          Do the same edit on the same image in every build, then compare the logs.
+          If \`D-post-cltiling\` logs \`process tiled\` where \`C-pre-cltiling\` logs
+          \`process\`, the fast-tiling arithmetic is the regression.
+          EOF
