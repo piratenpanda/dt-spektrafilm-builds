@@ -1,0 +1,659 @@
+name: Test Builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "What to build"
+        type: choice
+        default: builds
+        options:
+          - builds
+          - perf-probe
+
+permissions:
+  contents: write
+  actions: write
+
+env:
+  SOURCE_REPO: piratenpanda/darktable
+  SOURCE_BRANCH: spektrafilm
+  RELEASE_TAG: spektrafilm-builds
+  UPSTREAM_REPO: darktable-org/darktable
+  PROBE_TAG: perf-probe-macos
+
+jobs:
+  # ============================================================
+  # Check for new commits on the source branch
+  # ============================================================
+  check:
+    if: inputs.mode != 'perf-probe'
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.verify.outputs.skip }}
+      date_version: ${{ steps.verify.outputs.date_version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+      - name: Fetch source branch tip
+        run: git fetch https://github.com/${{ env.SOURCE_REPO }} ${{ env.SOURCE_BRANCH }} --depth=1
+      - name: Check for new commits
+        id: verify
+        run: |
+          LAST_BUILT=$(cat last-built.sha 2>/dev/null || echo "none")
+          LATEST=$(git rev-parse FETCH_HEAD)
+          SHORT=$(git rev-parse --short FETCH_HEAD)
+          echo "Last built: $LAST_BUILT"
+          echo "Latest:     $LATEST"
+          if [ "$LAST_BUILT" = "$LATEST" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+          echo "date_version=$(date +%Y%m%d)-${SHORT}" >> $GITHUB_OUTPUT
+
+  # ============================================================
+  # Linux AppImage (x86_64 + ARM64)
+  # ============================================================
+  AppImage:
+    if: needs.check.outputs.skip == 'false'
+    needs: [check]
+    name: AppImage_${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            arch: X64
+            compiler: { compiler: GNU12, CC: gcc-12, CXX: g++-12, packages: gcc-12 g++-12 }
+          - os: ubuntu-24.04-arm
+            arch: ARM64
+            compiler: { compiler: GNU14, CC: gcc-14, CXX: g++-14, packages: gcc-14 g++-14 }
+    env:
+      CC: ${{ matrix.compiler.CC }}
+      CXX: ${{ matrix.compiler.CXX }}
+      SRC_DIR: ${{ github.workspace }}/src
+      BUILD_DIR: ${{ github.workspace }}/build
+      INSTALL_PREFIX: ${{ github.workspace }}/AppDir/usr
+      CMAKE_BUILD_TYPE: Release
+      GENERATOR: Ninja
+    steps:
+      - name: Install compiler ${{ matrix.compiler.compiler }}
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install ${{ matrix.compiler.packages }}
+      - name: Install Base Dependencies
+        run: |
+          sudo apt-get -y install \
+            build-essential desktop-file-utils gettext git gdb intltool \
+            libarchive-dev libatk1.0-dev libcairo2-dev libcolord-dev \
+            libcolord-gtk-dev libcups2-dev libcurl4-gnutls-dev \
+            libimage-exiftool-perl libfuse2 libgdk-pixbuf2.0-dev \
+            libglib2.0-dev libgmic-dev libgraphicsmagick1-dev \
+            libgtk-3-dev libinih-dev libjson-glib-dev liblcms2-dev \
+            liblensfun-dev liblensfun-bin liblensfun-data-v1 liblensfun1 \
+            libosmgpsmap-1.0-dev libpango1.0-dev libpng-dev \
+            libportmidi-dev libpotrace-dev libpugixml-dev librsvg2-dev \
+            libsaxon-java libsdl2-dev libsecret-1-dev libsqlite3-dev \
+            libtiff5-dev libwebp-dev libx11-dev libxml2-dev libxml2-utils \
+            ninja-build perl po4a python3-jsonschema xsltproc zlib1g-dev \
+            appstream
+      - name: Add PPA for multimedia libs (x86_64 only)
+        if: runner.arch != 'ARM64'
+        run: |
+          sudo add-apt-repository -y ppa:savoury1/graphics
+          sudo add-apt-repository -y ppa:savoury1/ffmpeg4
+          sudo add-apt-repository -y ppa:savoury1/display
+          sudo apt-get update
+      - name: Install extra dependencies
+        run: |
+          sudo apt-get -y install \
+            aom-tools libaom-dev libavif-dev libgphoto2-dev libde265-dev \
+            libimath-dev libjpeg-turbo8-dev libjxl-dev libopenexr-dev \
+            libopenh264-dev libopenjp2-7-dev libsharpyuv-dev libx265-dev \
+            libwebm-dev x11proto-dev libxfixes-dev
+      - name: Build and install libheif
+        run: |
+          git clone --branch v1.23.1 --depth 1 https://github.com/strukturag/libheif src-libheif
+          cd src-libheif
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release -DENABLE_PLUGIN_LOADING=OFF \
+            -DWITH_LIBDE265=ON -DWITH_AOM_DECODER=ON -DWITH_AOM_ENCODER=ON \
+            -DWITH_OpenH264_DECODER=ON -DWITH_JPEG_DECODER=ON \
+            -DWITH_OpenJPEG_DECODER=ON -DWITH_LIBSHARPYUV=ON \
+            -DCMAKE_INSTALL_PREFIX=/usr
+          ninja -C build
+          sudo ninja -C build install
+      - name: Build and install exiv2
+        run: |
+          git clone --branch v0.28.8 --depth 1 https://github.com/Exiv2/exiv2 src-exiv2
+          cd src-exiv2
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=ON -DEXIV2_ENABLE_NLS=ON \
+            -DEXIV2_ENABLE_VIDEO=OFF -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build build
+          sudo cmake --install build
+      - name: Checkout source code
+        run: |
+          git clone -b ${{ env.SOURCE_BRANCH }} \
+            https://github.com/${{ env.SOURCE_REPO }} src
+          pushd src
+          git submodule init
+          git config submodule.src/tests/integration.update none
+          git submodule update
+      - name: Update Lensfun data
+        run: sudo lensfun-update-data
+      - name: Build AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd src
+          bash tools/appimage-build-script.sh
+      - name: Rename AppImage artifact
+        run: |
+          dt_ver="${{ needs.check.outputs.date_version }}"
+          case "${{ runner.arch }}" in
+            X64)   arch="x86_64" ;;
+            ARM64) arch="aarch64" ;;
+          esac
+          cd "${{ github.workspace }}/src/build"
+          for f in Darktable-*.AppImage; do
+            [ -f "$f" ] && mv "$f" "darktable-spektrafilm-${dt_ver}-${arch}.AppImage"
+          done
+          for f in Darktable-*.AppImage.zsync; do
+            [ -f "$f" ] && mv "$f" "darktable-spektrafilm-${dt_ver}-${arch}.AppImage.zsync"
+          done
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ github.workspace }}/src/build/darktable-spektrafilm-*.AppImage*
+          name: artifact-appimage-${{ runner.arch }}
+          retention-days: 3
+
+  # ============================================================
+  # Windows Installer (UCRT64 + CLANGARM64)
+  # ============================================================
+  Windows:
+    if: needs.check.outputs.skip == 'false'
+    needs: [check]
+    name: Windows_${{ matrix.msystem }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - msystem: UCRT64
+            os: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      SRC_DIR: ${{ github.workspace }}/src
+      BUILD_DIR: ${{ github.workspace }}/build
+      INSTALL_PREFIX: ${{ github.workspace }}/install
+      ECO: -DBINARY_PACKAGE_BUILD=ON
+      CMAKE_BUILD_TYPE: Release
+      TARGET: skiptest
+      GENERATOR: Ninja
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          install: >-
+            git intltool po4a
+          pacboy: >-
+            cc:p cmake:p libxslt:p ninja:p python-jsonschema:p curl:p
+            drmingw:p gcc-libs:p gettext:p gmic:p graphicsmagick:p
+            gtk3:p icu:p imath:p iso-codes:p lcms2:p lensfun:p
+            libavif:p libgphoto2:p libheif:p libjpeg-turbo:p libjxl:p
+            libpng:p librsvg:p libsecret:p libtiff:p libwebp:p
+            libxml2:p lua54:p omp:p openexr:p openjpeg2:p osm-gps-map:p
+            portmidi:p potrace:p pugixml:p SDL2:p sqlite3:p
+            webp-pixbuf-loader:p zlib:p
+          update: true
+      - name: Build and install exiv2
+        run: |
+          git clone --branch v0.27.7 --depth 1 https://github.com/Exiv2/exiv2 src-exiv2
+          cd src-exiv2
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=ON -DEXIV2_ENABLE_BMFF=ON \
+            -DEXIV2_ENABLE_NLS=ON -DEXIV2_ENABLE_VIDEO=OFF \
+            -DEXIV2_ENABLE_WIN_UNICODE=ON \
+            -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX}
+          cmake --build build
+          cmake --install build
+      - run: git config --global core.autocrlf input
+        shell: bash
+      - name: Checkout source code
+        run: |
+          git clone -b ${{ env.SOURCE_BRANCH }} \
+            https://github.com/${{ env.SOURCE_REPO }} src
+          cd src
+          git submodule init
+          git config submodule.src/tests/integration.update none
+          git submodule update
+      - name: Update Lensfun data
+        run: lensfun-update-data
+      - name: Build and Install
+        run: |
+          cmake -E make_directory "${BUILD_DIR}"
+          cmake -E make_directory "${INSTALL_PREFIX}"
+          $(cygpath ${SRC_DIR})/.ci/ci-script.sh
+      - name: Create icon file
+        run: |
+          pacboy --noconfirm -S --needed imagemagick:p
+          magick "${SRC_DIR}"/data/pixmaps/256x256/darktable.png \
+            -define icon:auto-resize="256,128,64,48,32,16" \
+            "${INSTALL_PREFIX}"/dt_logo_multiresolution.ico
+      - name: Patch Inno Setup script for Spektrafilm
+        shell: bash
+        run: |
+          # Use a unique AppId so the installer doesn't collide with official darktable
+          # This changes: AppId=darktable[-dev] → AppId=darktable-spektrafilm[-dev]
+          # and install dir from C:\Program Files\darktable[-dev] → C:\Program Files\darktable-spektrafilm[-dev]
+          sed -i 's/^#define MyAppName "darktable"/#define MyAppName "darktable-spektrafilm"/' \
+            "${{ env.BUILD_DIR }}/darktable.iss"
+      - name: Create Inno Setup installer
+        shell: pwsh
+        run: |
+          choco upgrade innosetup --no-progress
+          cd ${{ env.INSTALL_PREFIX }}
+          cp ${{ env.BUILD_DIR }}/darktable.iss ./
+          iscc "darktable.iss"
+          mv Output/*.exe ${{ env.BUILD_DIR }}/
+      - name: Rename Windows artifact
+        shell: bash
+        run: |
+          dt_ver="${{ needs.check.outputs.date_version }}"
+          cd "${{ env.BUILD_DIR }}"
+          for f in darktable-*.exe; do
+            [ -f "$f" ] && mv "$f" "darktable-spektrafilm-${dt_ver}-x86_64.exe"
+          done
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ env.BUILD_DIR }}/darktable-spektrafilm-*.exe
+          name: artifact-windows-${{ runner.arch }}
+          retention-days: 3
+
+  # ============================================================
+  # macOS DMG (arm64 + x86_64)
+  # ============================================================
+  macOS:
+    if: needs.check.outputs.skip == 'false'
+    needs: [check]
+    name: macOS_${{ matrix.build.os }}
+    runs-on: ${{ matrix.build.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          - { os: macos-14,       xcode: 16.2, deployment: 14.0 }
+          - { os: macos-15-intel, xcode: 26.3, deployment: 15.0 }
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.build.xcode }}.app/Contents/Developer
+      CC: cc
+      CXX: c++
+      MACOSX_DEPLOYMENT_TARGET: ${{ matrix.build.deployment }}
+      SRC_DIR: ${{ github.workspace }}/src
+      BUILD_DIR: ${{ github.workspace }}/src/build
+      INSTALL_PREFIX: ${{ github.workspace }}/src/build/macosx
+      ECO: -DBINARY_PACKAGE_BUILD=ON -DBUILD_CURVE_TOOLS=ON -DBUILD_NOISE_TOOLS=ON -DUSE_GRAPHICSMAGICK=ON -DUSE_IMAGEMAGICK=OFF
+      CMAKE_BUILD_TYPE: Release
+      GENERATOR: Ninja
+      TARGET: skiptest
+    steps:
+      - name: Checkout source code
+        run: |
+          git clone -b ${{ env.SOURCE_BRANCH }} \
+            https://github.com/${{ env.SOURCE_REPO }} src
+          cd src
+          git submodule init
+          git config submodule.src/tests/integration.update none
+          git submodule update
+      - name: Install Base Dependencies
+        run: |
+          brew update > /dev/null || true
+          cd src/.ci
+          export HOMEBREW_NO_INSTALL_UPGRADE=1
+          brew bundle --verbose || true
+          export HOMEBREW_NO_INSTALL_FROM_API=1
+          brew developer on
+          gm_formula=$(brew edit --quiet --print-path graphicsmagick)
+          cat "$gm_formula" | sed 's/--with-modules/--disable-installed/1' > gm_formula.tmp
+          mv gm_formula.tmp "$gm_formula"
+          brew reinstall --build-from-source --force --quiet graphicsmagick
+      - name: Build and Install
+        run: |
+          cmake -E make_directory "${BUILD_DIR}"
+          cmake -E make_directory "${INSTALL_PREFIX}"
+          ./src/.ci/ci-script.sh
+      - uses: actions/checkout@v7
+        with:
+          path: workflow
+      - name: Apply macOS packaging speedup patch
+        run: |
+          patch -p1 -d src -N < "${{ github.workspace }}/workflow/.github/patches/macosx-package-parallelize.patch" \
+            || echo "::warning::Speedup patch skipped (already applied or upstream drifted); packaging runs unpatched"
+      - name: Build macOS package
+        run: ./src/packaging/macosx/3_make_hb_darktable_package.sh
+      - name: Create DMG
+        run: ./src/packaging/macosx/4_make_hb_darktable_dmg.sh
+      - name: Rename DMG
+        run: |
+          dt_ver="${{ needs.check.outputs.date_version }}"
+          case "${{ runner.arch }}" in
+            ARM64) arch="arm64" ;;
+            X64)   arch="x86_64" ;;
+          esac
+          cd "${{ env.INSTALL_PREFIX }}"
+          for f in darktable-*.dmg; do
+            [ -f "$f" ] && mv "$f" "darktable-spektrafilm-${dt_ver}-${arch}.dmg"
+          done
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ env.INSTALL_PREFIX }}/darktable-spektrafilm-*.dmg
+          name: artifact-macos-${{ runner.arch }}
+          retention-days: 3
+
+  # ============================================================
+  # Publish release + auto-update README
+  # ============================================================
+  publish:
+    if: needs.check.outputs.skip == 'false'
+    needs: [check, AppImage, Windows, macOS]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v8
+      - name: Get source info
+        id: source-info
+        run: |
+          git fetch https://github.com/${{ env.SOURCE_REPO }} ${{ env.SOURCE_BRANCH }} --tags --depth=100
+          SHA=$(git rev-parse FETCH_HEAD)
+          echo "COMMIT_SHA=$SHA" >> $GITHUB_ENV
+          echo "VERSION=${{ needs.check.outputs.date_version }}" >> $GITHUB_ENV
+      - name: Record artifact filenames
+        id: artifacts
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          TAG="${{ env.RELEASE_TAG }}"
+          BASE="https://github.com/$OWNER/$REPO/releases/download/$TAG"
+
+          for dir in artifact-appimage-X64 artifact-appimage-ARM64 \
+                     artifact-windows-X64 \
+                     artifact-macos-ARM64 artifact-macos-X64; do
+            file=$(ls "$dir" 2>/dev/null | head -1 || true)
+            if [ -n "$file" ]; then
+              echo "${dir}_FILE=$file" >> $GITHUB_ENV
+              echo "${dir}_URL=${BASE}/${file}" >> $GITHUB_ENV
+            fi
+          done
+      - name: Create/Update GitHub Release
+        id: release
+        uses: ncipollo/release-action@v1.21.0
+        with:
+          tag: ${{ env.RELEASE_TAG }}
+          allowUpdates: true
+          removeArtifacts: true
+          prerelease: true
+          artifactErrorsFailBuild: false
+          name: "Spektrafilm build ${{ env.VERSION }}"
+          body: |
+            Automated build from the [${{ env.SOURCE_BRANCH }}](https://github.com/${{ env.SOURCE_REPO }}/tree/${{ env.SOURCE_BRANCH }}) branch.
+
+            **Version:** ${{ env.VERSION }}
+            **Commit:** `${{ env.COMMIT_SHA }}`
+
+            > **⚠️ HIGHLY EXPERIMENTAL** — backup your darktable library (`~/.config/darktable/`) and catalogs before testing. Use `--library <path>` to keep your main setup safe.
+          artifacts: |
+            artifact-appimage-X64/*
+            artifact-appimage-ARM64/*
+            artifact-windows-X64/*
+            artifact-macos-ARM64/*
+            artifact-macos-X64/*
+      - name: Update README with download links
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          SRC="${{ env.SOURCE_REPO }}"
+          TAG="${{ env.RELEASE_TAG }}"
+          BASE="https://github.com/$OWNER/$REPO/releases/download/$TAG"
+          V="${{ env.VERSION }}"
+
+          ax64f="${{ env.artifact-appimage-X64_FILE }}"
+          aa64f="${{ env.artifact-appimage-ARM64_FILE }}"
+          wx64f="${{ env.artifact-windows-X64_FILE }}"
+          wa64f=""
+          ma64f="${{ env.artifact-macos-ARM64_FILE }}"
+          mx64f="${{ env.artifact-macos-X64_FILE }}"
+
+          # Get last 4 commits from source
+          COMMITS=$(git log FETCH_HEAD -4 --format="| %as | [%h](https://github.com/${SRC}/commit/%h) | %an | %s |" 2>/dev/null || true)
+
+          cat > README.md << READMEEOF
+          # Darktable Spektrafilm — Builds
+
+           Automated builds from the [spektrafilm-draft](https://github.com/${SRC}/tree/spektrafilm-draft) branch.
+
+          Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](https://discuss.pixls.us/t/spektrafilm-darktable-module-implementation-discussion/58744)
+
+          > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux \`~/.config/darktable/\`, macOS \`~/Library/Application Support/darktable/\`, Windows \`%APPDATA%\\darktable\\\`. Use \`--library <path>\` to keep your main setup safe.
+
+          **Latest version:** ${V}
+
+          ## Latest Builds
+
+          | Platform | Architecture | Download |
+          |----------|-------------|----------|
+          | Linux AppImage | x86_64 | [${ax64f}](${BASE}/${ax64f}) |
+          | Linux AppImage | ARM64 | [${aa64f}](${BASE}/${aa64f}) |
+          | Windows | x86_64 | [${wx64f}](${BASE}/${wx64f}) |
+          | macOS | ARM64 (Apple Silicon) | [${ma64f}](${BASE}/${ma64f}) |
+          | macOS | x86_64 (Intel) | [${mx64f}](${BASE}/${mx64f}) |
+
+          ## Recent Commits
+
+          | Date | Commit | Author | Message |
+          |------|--------|--------|---------|
+          ${COMMITS}
+
+          ## Data pack
+
+          If you are upgrading from an older build, delete the \`spektrafilm\` folder from your darktable config directory first, so the module doesn't keep using outdated data:
+
+          | Platform | Folder to delete |
+          |----------|------------------|
+          | Linux | \`~/.config/darktable/spektrafilm/\` |
+          | macOS | \`~/Library/Application Support/darktable/spektrafilm/\` |
+          | macOS | \`~/.config/darktable/spektrafilm/\` |
+          | Windows | \`%APPDATA%\darktable\spektrafilm\\\` |
+
+          Then:
+
+          1. Enable **Preferences → Security → "allow spektrafilm to download data packs"**.
+          2. **Restart darktable** — the setting only takes effect after a restart.
+          3. Open the spektrafilm module on a photo. If a data pack is missing, a **"download data pack"** button appears — click it and the module downloads the data pack it needs, verifying the download before it's used.
+          4. Newer builds will use ~/.local/share/darktable as the pack download directory    
+          
+          READMEEOF
+      - name: Store last-built commit SHA
+        run: |
+          echo "${{ env.COMMIT_SHA }}" > last-built.sha
+      - name: Commit and push to ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md last-built.sha
+          git diff --staged --quiet || git commit -m "Auto-update: build ${{ env.VERSION }}"
+          git push
+
+  # ============================================================
+  # macOS perf probe: stock upstream master at four points
+  # bracketing the two suspected performance regressions
+  #
+  #   511949f50f  "Account for and disable distorted mask caches
+  #                on low-mem systems"          (2026-08-13)
+  #   41e2ba27bb  "Fix calculations for fast opencl tiling"
+  #                                             (2026-08-14)
+  #
+  # These builds contain NO spektrafilm code. They exist purely
+  # to tell whether an upstream change degraded darktable as a
+  # whole. The four points give three intervals; the B..C gap
+  # also happens to contain the gtk4-prep event-controller sweep
+  # (merge a62beee1c5), so a regression showing up between B and
+  # C points at input handling rather than at the pixelpipe.
+  # ============================================================
+  perf-probe:
+    if: inputs.mode == 'perf-probe'
+    name: perf-probe_${{ matrix.point.label }}
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        point:
+          - label: A-pre-maskcache
+            sha: 29b530df4d43bba240245a322f0e9728780cf04b
+            note: "parent of 511949f50f (Safer dt_get_available_pipe_mem)"
+          - label: B-post-maskcache
+            sha: 511949f50f16440000c6e787a6d726fe9754b9a7
+            note: "Account for and disable distorted mask caches on low-mem systems"
+          - label: C-pre-cltiling
+            sha: b7dbf0c89a925a6dc52b0dbb51ac9ea36a28ae81
+            note: "parent of 41e2ba27bb (Minor code simplification)"
+          - label: D-post-cltiling
+            sha: 41e2ba27bbd7f6d7bdf54e0ada5d54be68d9ca63
+            note: "Fix calculations for fast opencl tiling"
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.2.app/Contents/Developer
+      CC: cc
+      CXX: c++
+      MACOSX_DEPLOYMENT_TARGET: 14.0
+      SRC_DIR: ${{ github.workspace }}/src
+      BUILD_DIR: ${{ github.workspace }}/src/build
+      INSTALL_PREFIX: ${{ github.workspace }}/src/build/macosx
+      ECO: -DBINARY_PACKAGE_BUILD=ON -DBUILD_CURVE_TOOLS=ON -DBUILD_NOISE_TOOLS=ON -DUSE_GRAPHICSMAGICK=ON -DUSE_IMAGEMAGICK=OFF
+      CMAKE_BUILD_TYPE: Release
+      GENERATOR: Ninja
+      TARGET: skiptest
+    steps:
+      - name: Checkout upstream master at ${{ matrix.point.label }}
+        run: |
+          # Blob-filtered clone: full commit history (needed to check out an
+          # arbitrary SHA) without pulling every historic file revision.
+          git clone --filter=blob:none https://github.com/${{ env.UPSTREAM_REPO }} src
+          cd src
+          git checkout --detach ${{ matrix.point.sha }}
+          git submodule init
+          git config submodule.src/tests/integration.update none
+          git submodule update
+          echo "Building $(git rev-parse --short HEAD): $(git log -1 --format=%s)"
+      - name: Install Base Dependencies
+        run: |
+          brew update > /dev/null || true
+          cd src/.ci
+          export HOMEBREW_NO_INSTALL_UPGRADE=1
+          brew bundle --verbose || true
+          export HOMEBREW_NO_INSTALL_FROM_API=1
+          brew developer on
+          gm_formula=$(brew edit --quiet --print-path graphicsmagick)
+          cat "$gm_formula" | sed 's/--with-modules/--disable-installed/1' > gm_formula.tmp
+          mv gm_formula.tmp "$gm_formula"
+          brew reinstall --build-from-source --force --quiet graphicsmagick
+      - name: Build and Install
+        run: |
+          cmake -E make_directory "${BUILD_DIR}"
+          cmake -E make_directory "${INSTALL_PREFIX}"
+          ./src/.ci/ci-script.sh
+      - uses: actions/checkout@v7
+        with:
+          path: workflow
+      - name: Apply macOS packaging speedup patch
+        run: |
+          patch -p1 -d src -N < "${{ github.workspace }}/workflow/.github/patches/macosx-package-parallelize.patch" \
+            || echo "::warning::Speedup patch skipped (already applied or upstream drifted); packaging runs unpatched"
+      - name: Build macOS package
+        run: ./src/packaging/macosx/3_make_hb_darktable_package.sh
+      - name: Create DMG
+        run: ./src/packaging/macosx/4_make_hb_darktable_dmg.sh
+      - name: Rename DMG
+        run: |
+          short=$(git -C src rev-parse --short HEAD)
+          cd "${{ env.INSTALL_PREFIX }}"
+          for f in darktable-*.dmg; do
+            [ -f "$f" ] && mv "$f" "darktable-perfprobe-${{ matrix.point.label }}-g${short}-arm64.dmg"
+          done
+          ls -la *.dmg
+      - name: Upload probe artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ env.INSTALL_PREFIX }}/darktable-perfprobe-*.dmg
+          name: artifact-perfprobe-${{ matrix.point.label }}
+          retention-days: 7
+
+  # ============================================================
+  # Publish the perf probe DMGs under their own release tag so
+  # testers without a GitHub account can download them
+  # ============================================================
+  perf-probe-publish:
+    if: inputs.mode == 'perf-probe'
+    needs: [perf-probe]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+      - name: Flatten artifacts
+        run: |
+          mkdir -p probe
+          find artifact-perfprobe-* -name '*.dmg' -exec cp {} probe/ \;
+          ls -la probe/
+      - name: Create/Update probe release
+        uses: ncipollo/release-action@v1.21.0
+        with:
+          tag: ${{ env.PROBE_TAG }}
+          allowUpdates: true
+          removeArtifacts: true
+          prerelease: true
+          artifactErrorsFailBuild: false
+          name: "macOS perf probe (stock darktable master)"
+          body: |
+            Four builds of **stock upstream darktable master** — no spektrafilm module, no other patches.
+            They bracket two commits suspected of degrading general darkroom responsiveness.
+
+            | Build | Commit | What it is |
+            |-------|--------|------------|
+            | A | [`29b530df4d`](https://github.com/darktable-org/darktable/commit/29b530df4d43bba240245a322f0e9728780cf04b) | before the mask-cache memory gating |
+            | B | [`511949f50f`](https://github.com/darktable-org/darktable/commit/511949f50f16440000c6e787a6d726fe9754b9a7) | after it |
+            | C | [`b7dbf0c89a`](https://github.com/darktable-org/darktable/commit/b7dbf0c89a925a6dc52b0dbb51ac9ea36a28ae81) | before the OpenCL fast-tiling recalculation |
+            | D | [`41e2ba27bb`](https://github.com/darktable-org/darktable/commit/41e2ba27bbd7f6d7bdf54e0ada5d54be68d9ca63) | after it |
+
+            Test in order A → B → C → D and note where it turns bad:
+
+            - bad from **B** onward → the distorted-mask caches are being disabled by the 6 GB `dt_get_available_mem()` threshold
+            - bad from **C** onward → not either target commit; the A..D span also contains the gtk4-prep event-controller sweep, so suspect input handling
+            - bad from **D** onward → the fast-tiling `per_line` / `dt_opencl_image_fits_device()` arithmetic
+
+            **How to test**
+
+            Each DMG contains an app called `darktable.app`, so do not drag them all into `/Applications` — either run each straight from its mounted DMG, or copy them into four separate folders.
+
+            Keep them away from your real library:
+
+            ```
+            /Volumes/darktable/darktable.app/Contents/MacOS/darktable \
+              --configdir ~/dt-probe-config --library ~/dt-probe-config/library.db \
+              -d perf -d pipe -d tiling -d opencl 2>&1 | tee ~/probe-A.log
+            ```
+
+            Do the same edit on the same image in each build (open darkroom, pan, zoom, drag a slider), then attach the four logs. If build D logs `process tiled` where C logs `process`, that is the answer.
+
+            > **⚠️** These are unsigned test builds of an unstable branch. They will not open the spektrafilm module — that is expected, they are for isolating an upstream regression.
+          artifacts: |
+            probe/*.dmg
