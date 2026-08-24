@@ -1,31 +1,31 @@
 # Darktable Spektrafilm — Builds
 
- Automated builds from the [spektrafilm](https://github.com/piratenpanda/darktable/tree/spektrafilm) branch.
+ Automated builds from the [spektrafilm-draft](https://github.com/piratenpanda/darktable/tree/spektrafilm-draft) branch.
 
 Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](https://discuss.pixls.us/t/spektrafilm-darktable-module-implementation-discussion/58744)
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260823-549f935
+**Latest version:** 20260824-0da246e
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260823-549f935-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260823-549f935-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260823-549f935-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260823-549f935-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260823-549f935-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260823-549f935-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260823-549f935-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260823-549f935-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260823-549f935-x86_64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260823-549f935-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260824-0da246e-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260824-0da246e-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260824-0da246e-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260824-0da246e-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260824-0da246e-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260824-0da246e-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260824-0da246e-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260824-0da246e-arm64.dmg) |
+| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260824-0da246e-x86_64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260824-0da246e-x86_64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-08-23 | [549f93528](https://github.com/piratenpanda/darktable/commit/549f93528) | t | spektrafilm: drop the blank line at end of file |
-| 2026-08-23 | [648e3f9ee](https://github.com/piratenpanda/darktable/commit/648e3f9ee) | t | spektrafilm: solve the output scale in its own slot |
-| 2026-08-23 | [9dc90ea4a](https://github.com/piratenpanda/darktable/commit/9dc90ea4a) | t | spektrafilm: retry the grain tables after a failed OpenCL upload |
-| 2026-08-23 | [46bd66114](https://github.com/piratenpanda/darktable/commit/46bd66114) | t | spektrafilm: declare the tile memory the module uses |
+| 2026-08-24 | [0da246e72](https://github.com/piratenpanda/darktable/commit/0da246e72) | piratenpanda | spektrafilm: strip trailing whitespace |
+| 2026-08-24 | [75ce96555](https://github.com/piratenpanda/darktable/commit/75ce96555) | piratenpanda | spektrafilm: make the film and print sections collapsible |
+| 2026-08-23 | [10ce5c16a](https://github.com/piratenpanda/darktable/commit/10ce5c16a) | piratenpanda | spektrafilm: fold "scan the film" into the paper selector |
+| 2026-08-23 | [4358bb7db](https://github.com/piratenpanda/darktable/commit/4358bb7db) | piratenpanda | spektrafilm: drop the blank line at end of file |
 
 ## Data pack
 
