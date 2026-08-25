@@ -29,6 +29,8 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 ## Data pack
 
+** Current builds use ~/.local/share/darktable as the pack download directory on Linux. Other platforms accordingly **    
+
 If you are upgrading from an older build, delete the `spektrafilm` folder from your darktable config directory first, so the module doesn't keep using outdated data:
 
 | Platform | Folder to delete |
@@ -40,8 +42,6 @@ If you are upgrading from an older build, delete the `spektrafilm` folder from y
 
 Then:
 
-1. Enable **Preferences → Security → "allow spektrafilm to download data packs"**.
+1. Enable **Preferences → Security → "allow spektrafilm to download data packs"**. (newer builds don't have this option anymore)
 2. **Restart darktable** — the setting only takes effect after a restart.
 3. Open the spektrafilm module on a photo. If a data pack is missing, a **"download data pack"** button appears — click it and the module downloads the data pack it needs, verifying the download before it's used.
-4. Newer builds will use ~/.local/share/darktable as the pack download directory    
-
