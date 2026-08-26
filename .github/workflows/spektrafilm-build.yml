@@ -11,6 +11,10 @@ env:
   SOURCE_REPO: piratenpanda/darktable
   SOURCE_BRANCH: spektrafilm
   RELEASE_TAG: spektrafilm-builds
+  # Space-separated list of upstream darktable-org/darktable PR numbers to
+  # cherry-pick on top of SOURCE_BRANCH before building. Add/remove PR
+  # numbers here; no other job needs to change.
+  EXTRA_PRS: "22004"
 
 jobs:
   # ============================================================
@@ -138,6 +142,21 @@ jobs:
           git submodule init
           git config submodule.src/tests/integration.update none
           git submodule update
+      - name: Apply extra upstream PRs
+        run: |
+          cd src
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for pr in ${{ env.EXTRA_PRS }}; do
+            echo "::group::Cherry-picking darktable-org/darktable#${pr}"
+            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head"
+            if ! git cherry-pick FETCH_HEAD; then
+              echo "::error::Cherry-pick of PR #${pr} failed (conflict or already applied differently)"
+              git cherry-pick --abort || true
+              exit 1
+            fi
+            echo "::endgroup::"
+          done
       - name: Update Lensfun data
         run: sudo lensfun-update-data
       - name: Build AppImage
@@ -234,6 +253,21 @@ jobs:
           git submodule init
           git config submodule.src/tests/integration.update none
           git submodule update
+      - name: Apply extra upstream PRs
+        run: |
+          cd src
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for pr in ${{ env.EXTRA_PRS }}; do
+            echo "::group::Cherry-picking darktable-org/darktable#${pr}"
+            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head"
+            if ! git cherry-pick FETCH_HEAD; then
+              echo "::error::Cherry-pick of PR #${pr} failed (conflict or already applied differently)"
+              git cherry-pick --abort || true
+              exit 1
+            fi
+            echo "::endgroup::"
+          done
       - name: Update Lensfun data
         run: lensfun-update-data
       - name: Build and Install
@@ -313,6 +347,21 @@ jobs:
           git submodule init
           git config submodule.src/tests/integration.update none
           git submodule update
+      - name: Apply extra upstream PRs
+        run: |
+          cd src
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for pr in ${{ env.EXTRA_PRS }}; do
+            echo "::group::Cherry-picking darktable-org/darktable#${pr}"
+            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head"
+            if ! git cherry-pick FETCH_HEAD; then
+              echo "::error::Cherry-pick of PR #${pr} failed (conflict or already applied differently)"
+              git cherry-pick --abort || true
+              exit 1
+            fi
+            echo "::endgroup::"
+          done
       - name: Install Base Dependencies
         run: |
           brew update > /dev/null || true
@@ -410,7 +459,7 @@ jobs:
           artifactErrorsFailBuild: false
           name: "Spektrafilm build ${{ env.VERSION }}"
           body: |
-            Automated build from the [${{ env.SOURCE_BRANCH }}](https://github.com/${{ env.SOURCE_REPO }}/tree/${{ env.SOURCE_BRANCH }}) branch.
+            Automated build from the [${{ env.SOURCE_BRANCH }}](https://github.com/${{ env.SOURCE_REPO }}/tree/${{ env.SOURCE_BRANCH }}) branch, with the following upstream PR(s) cherry-picked on top: ${{ env.EXTRA_PRS }}.
 
             **Version:** ${{ env.VERSION }}
             **Commit:** `${{ env.COMMIT_SHA }}`
@@ -445,7 +494,7 @@ jobs:
           cat > README.md << READMEEOF
           # Darktable Spektrafilm — Builds
 
-           Automated builds from the [spektrafilm](https://github.com/${SRC}/tree/spektrafilm) branch.
+           Automated builds from the [spektrafilm](https://github.com/${SRC}/tree/spektrafilm) branch, with the following upstream PR(s) cherry-picked on top: ${{ env.EXTRA_PRS }}.
 
           Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](https://discuss.pixls.us/t/spektrafilm-darktable-module-implementation-discussion/58744)
 
