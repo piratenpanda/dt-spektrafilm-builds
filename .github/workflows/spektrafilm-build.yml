@@ -406,10 +406,13 @@ jobs:
           # anything darktable needs). Neither Homebrew's Brewfile nor this
           # job installs that dependency, so leave it off rather than add an
           # extra brew package solely to satisfy an unused feature.
+          # Install prefix must match Homebrew's own prefix for this runner:
+          # /opt/homebrew on Apple Silicon (macos-14), /usr/local on Intel
+          # (macos-15-intel). Hardcoding either one breaks the other arch.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=ON -DEXIV2_ENABLE_NLS=ON \
             -DEXIV2_ENABLE_VIDEO=OFF -DEXIV2_ENABLE_INIH=OFF \
-            -DCMAKE_INSTALL_PREFIX=/usr/local
+            -DCMAKE_INSTALL_PREFIX="$(brew --prefix)"
           cmake --build build
           cmake --install build
       - name: Cancel workflow if job fails
