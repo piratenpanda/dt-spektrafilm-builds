@@ -401,9 +401,15 @@ jobs:
           brew uninstall --ignore-dependencies exiv2 || true
           git clone --branch v0.28.9 --depth 1 https://github.com/Exiv2/exiv2 src-exiv2
           cd src-exiv2
+          # EXIV2_ENABLE_INIH defaults ON and hard-requires the inih/INIReader
+          # libraries (used for exiv2's own INI-based sample config, not
+          # anything darktable needs). Neither Homebrew's Brewfile nor this
+          # job installs that dependency, so leave it off rather than add an
+          # extra brew package solely to satisfy an unused feature.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=ON -DEXIV2_ENABLE_NLS=ON \
-            -DEXIV2_ENABLE_VIDEO=OFF -DCMAKE_INSTALL_PREFIX=/usr/local
+            -DEXIV2_ENABLE_VIDEO=OFF -DEXIV2_ENABLE_INIH=OFF \
+            -DCMAKE_INSTALL_PREFIX=/usr/local
           cmake --build build
           cmake --install build
       - name: Cancel workflow if job fails
