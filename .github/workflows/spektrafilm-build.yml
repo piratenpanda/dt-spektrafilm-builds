@@ -336,8 +336,14 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - { os: macos-14,       xcode: 16.2, deployment: 14.0 }
-          - { os: macos-15-intel, xcode: 26.3, deployment: 15.0 }
+          # Intel (macos-15-intel) was dropped: Homebrew no longer ships
+          # bottles for Intel Mac (Tier 3, unsupported as of Sep 2026), so
+          # opencv and its dependents (boost, qt, vtk, openvino, etc.) fall
+          # back to building from source on every run - multi-hour builds
+          # for a platform Apple and Homebrew have both stopped supporting.
+          # darktable's own upstream CI (ci.yml) has already dropped this
+          # runner from its matrix for the same reason.
+          - { os: macos-14, xcode: 16.2, deployment: 14.0 }
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.build.xcode }}.app/Contents/Developer
       CC: cc
@@ -406,9 +412,9 @@ jobs:
           # anything darktable needs). Neither Homebrew's Brewfile nor this
           # job installs that dependency, so leave it off rather than add an
           # extra brew package solely to satisfy an unused feature.
-          # Install prefix must match Homebrew's own prefix for this runner:
-          # /opt/homebrew on Apple Silicon (macos-14), /usr/local on Intel
-          # (macos-15-intel). Hardcoding either one breaks the other arch.
+          # Install prefix must match Homebrew's own prefix ($(brew --prefix)
+          # resolves this rather than hardcoding /opt/homebrew, in case an
+          # Intel leg is ever reintroduced or the runner image changes).
           # CMake defaults to a relative @rpath install name for the built
           # dylib. darktable's packaging script (3_make_hb_darktable_package.sh)
           # only bundles dependencies whose linked path literally contains the
@@ -495,7 +501,7 @@ jobs:
 
           for dir in artifact-appimage-X64 artifact-appimage-ARM64 \
                      artifact-windows-X64 artifact-windows-ARM64 \
-                     artifact-macos-ARM64 artifact-macos-X64; do
+                     artifact-macos-ARM64; do
             file=$(ls "$dir" 2>/dev/null | head -1 || true)
             if [ -n "$file" ]; then
               echo "${dir}_FILE=$file" >> $GITHUB_ENV
@@ -525,7 +531,6 @@ jobs:
             artifact-windows-X64/*
             artifact-windows-ARM64/*
             artifact-macos-ARM64/*
-            artifact-macos-X64/*
       - name: Update README with download links
         run: |
           OWNER="${{ github.repository_owner }}"
@@ -540,7 +545,6 @@ jobs:
           wx64f="${{ env.artifact-windows-X64_FILE }}"
           wa64f="${{ env.artifact-windows-ARM64_FILE }}"
           ma64f="${{ env.artifact-macos-ARM64_FILE }}"
-          mx64f="${{ env.artifact-macos-X64_FILE }}"
 
           # Get last 4 commits from source
           COMMITS=$(git log FETCH_HEAD -4 --format="| %as | [%h](https://github.com/${SRC}/commit/%h) | %an | %s |" 2>/dev/null || true)
@@ -565,7 +569,6 @@ jobs:
           | Windows | x86_64 | [${wx64f}](${BASE}/${wx64f}) |
           | Windows | ARM64 | [${wa64f}](${BASE}/${wa64f}) |
           | macOS | ARM64 (Apple Silicon) | [${ma64f}](${BASE}/${ma64f}) |
-          | macOS | x86_64 (Intel) | [${mx64f}](${BASE}/${mx64f}) |
 
           ## Recent Commits
 
