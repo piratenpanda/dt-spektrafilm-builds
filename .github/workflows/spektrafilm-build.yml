@@ -149,8 +149,14 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for pr in ${{ env.EXTRA_PRS }}; do
             echo "::group::Cherry-picking darktable-org/darktable#${pr}"
-            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head"
-            if ! git cherry-pick FETCH_HEAD; then
+            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head:pr${pr}"
+            # PRs are usually a stack of commits, not one. Cherry-picking only
+            # FETCH_HEAD (the tip) applies just the last commit's diff, which
+            # assumes the earlier commits in the PR are already present -
+            # they aren't, so it conflicts. Replay the PR's full commit range
+            # instead: from its merge-base with our current branch, to its tip.
+            base=$(git merge-base "pr${pr}" HEAD)
+            if ! git cherry-pick "${base}..pr${pr}"; then
               echo "::error::Cherry-pick of PR #${pr} failed (conflict or already applied differently)"
               git cherry-pick --abort || true
               exit 1
@@ -260,8 +266,14 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for pr in ${{ env.EXTRA_PRS }}; do
             echo "::group::Cherry-picking darktable-org/darktable#${pr}"
-            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head"
-            if ! git cherry-pick FETCH_HEAD; then
+            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head:pr${pr}"
+            # PRs are usually a stack of commits, not one. Cherry-picking only
+            # FETCH_HEAD (the tip) applies just the last commit's diff, which
+            # assumes the earlier commits in the PR are already present -
+            # they aren't, so it conflicts. Replay the PR's full commit range
+            # instead: from its merge-base with our current branch, to its tip.
+            base=$(git merge-base "pr${pr}" HEAD)
+            if ! git cherry-pick "${base}..pr${pr}"; then
               echo "::error::Cherry-pick of PR #${pr} failed (conflict or already applied differently)"
               git cherry-pick --abort || true
               exit 1
@@ -354,8 +366,14 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for pr in ${{ env.EXTRA_PRS }}; do
             echo "::group::Cherry-picking darktable-org/darktable#${pr}"
-            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head"
-            if ! git cherry-pick FETCH_HEAD; then
+            git fetch https://github.com/darktable-org/darktable "refs/pull/${pr}/head:pr${pr}"
+            # PRs are usually a stack of commits, not one. Cherry-picking only
+            # FETCH_HEAD (the tip) applies just the last commit's diff, which
+            # assumes the earlier commits in the PR are already present -
+            # they aren't, so it conflicts. Replay the PR's full commit range
+            # instead: from its merge-base with our current branch, to its tip.
+            base=$(git merge-base "pr${pr}" HEAD)
+            if ! git cherry-pick "${base}..pr${pr}"; then
               echo "::error::Cherry-pick of PR #${pr} failed (conflict or already applied differently)"
               git cherry-pick --abort || true
               exit 1
