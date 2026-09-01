@@ -1,32 +1,32 @@
 # Darktable Spektrafilm — Builds
 
- Automated builds from the [spektrafilm](https://github.com/piratenpanda/darktable/tree/spektrafilm) branch.
+ Automated builds from the [spektrafilm](https://github.com/piratenpanda/darktable/tree/spektrafilm) branch, with the following upstream PR(s) cherry-picked on top: 22004.
 
 Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](https://discuss.pixls.us/t/spektrafilm-darktable-module-implementation-discussion/58744)
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260825-beaac15
+**Latest version:** 20260901-7c97cab
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260825-beaac15-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260825-beaac15-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260825-beaac15-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260825-beaac15-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260825-beaac15-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260825-beaac15-x86_64.exe) |
-| Windows | ARM64 | [darktable-spektrafilm-20260825-beaac15-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260825-beaac15-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260825-beaac15-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260825-beaac15-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260825-beaac15-x86_64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260825-beaac15-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260901-7c97cab-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260901-7c97cab-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260901-7c97cab-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.exe) |
+| Windows | ARM64 | [darktable-spektrafilm-20260901-7c97cab-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260901-7c97cab-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-arm64.dmg) |
+| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260901-7c97cab-x86_64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-08-24 | [beaac153c](https://github.com/piratenpanda/darktable/commit/beaac153c) | piratenpanda | spektrafilm: put the diffusion switches inside their sections |
-| 2026-08-24 | [960692120](https://github.com/piratenpanda/darktable/commit/960692120) | piratenpanda | spektrafilm: fold the diffusion tab into film and print |
-| 2026-08-24 | [bc7032e9d](https://github.com/piratenpanda/darktable/commit/bc7032e9d) | piratenpanda | spektrafilm: strip trailing whitespace |
-| 2026-08-24 | [db57043f9](https://github.com/piratenpanda/darktable/commit/db57043f9) | piratenpanda | spektrafilm: make the film and print sections collapsible |
+| 2026-08-31 | [7c97cab58](https://github.com/piratenpanda/darktable/commit/7c97cab58) | piratenpanda | opencl maintenance |
+| 2026-08-29 | [8633d65ee](https://github.com/piratenpanda/darktable/commit/8633d65ee) | piratenpanda | opencl: move spektrafilm.cl to program 43 |
+| 2026-08-28 | [c87af504f](https://github.com/piratenpanda/darktable/commit/c87af504f) | piratenpanda | initial presets |
+| 2026-08-26 | [805105f02](https://github.com/piratenpanda/darktable/commit/805105f02) | piratenpanda | remove print chemisty widget autohiding as it's a collapsible now |
 
 ## Data pack
 
