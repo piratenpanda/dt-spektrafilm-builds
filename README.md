@@ -6,27 +6,26 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260901-7c97cab
+**Latest version:** 20260901-e88281a
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260901-7c97cab-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260901-7c97cab-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260901-7c97cab-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.exe) |
-| Windows | ARM64 | [darktable-spektrafilm-20260901-7c97cab-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260901-7c97cab-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-arm64.dmg) |
-| macOS | x86_64 (Intel) | [darktable-spektrafilm-20260901-7c97cab-x86_64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-7c97cab-x86_64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260901-e88281a-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260901-e88281a-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260901-e88281a-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-x86_64.exe) |
+| Windows | ARM64 | [darktable-spektrafilm-20260901-e88281a-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260901-e88281a-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-arm64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-08-31 | [7c97cab58](https://github.com/piratenpanda/darktable/commit/7c97cab58) | piratenpanda | opencl maintenance |
-| 2026-08-29 | [8633d65ee](https://github.com/piratenpanda/darktable/commit/8633d65ee) | piratenpanda | opencl: move spektrafilm.cl to program 43 |
-| 2026-08-28 | [c87af504f](https://github.com/piratenpanda/darktable/commit/c87af504f) | piratenpanda | initial presets |
-| 2026-08-26 | [805105f02](https://github.com/piratenpanda/darktable/commit/805105f02) | piratenpanda | remove print chemisty widget autohiding as it's a collapsible now |
+| 2026-09-01 | [e88281a40](https://github.com/piratenpanda/darktable/commit/e88281a40) | piratenpanda | reorder presets |
+| 2026-08-31 | [7bfa6688b](https://github.com/piratenpanda/darktable/commit/7bfa6688b) | piratenpanda | opencl maintenance |
+| 2026-08-29 | [b66748021](https://github.com/piratenpanda/darktable/commit/b66748021) | piratenpanda | opencl: move spektrafilm.cl to program 43 |
+| 2026-08-28 | [cc4ea64e2](https://github.com/piratenpanda/darktable/commit/cc4ea64e2) | piratenpanda | initial presets |
 
 ## Data pack
 
