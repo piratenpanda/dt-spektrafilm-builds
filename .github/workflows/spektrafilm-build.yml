@@ -392,6 +392,20 @@ jobs:
           cat "$gm_formula" | sed 's/--with-modules/--disable-installed/1' > gm_formula.tmp
           mv gm_formula.tmp "$gm_formula"
           brew reinstall --build-from-source --force --quiet graphicsmagick
+      - name: Build and install exiv2
+        run: |
+          # The Homebrew 'exiv2' formula's pkg-config metadata isn't pinned and
+          # has broken FindExiv2.cmake's version check before (it reads
+          # pkg-config output, not `exiv2 --version`). Build a known-good
+          # version ourselves instead, same as the AppImage/Windows jobs do.
+          brew uninstall --ignore-dependencies exiv2 || true
+          git clone --branch v0.28.9 --depth 1 https://github.com/Exiv2/exiv2 src-exiv2
+          cd src-exiv2
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=ON -DEXIV2_ENABLE_NLS=ON \
+            -DEXIV2_ENABLE_VIDEO=OFF -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake --build build
+          cmake --install build
       - name: Cancel workflow if job fails
         if: ${{ failure() }}
         uses: andymckay/cancel-action@0.5
