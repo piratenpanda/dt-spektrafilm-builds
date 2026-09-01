@@ -409,9 +409,22 @@ jobs:
           # Install prefix must match Homebrew's own prefix for this runner:
           # /opt/homebrew on Apple Silicon (macos-14), /usr/local on Intel
           # (macos-15-intel). Hardcoding either one breaks the other arch.
+          # CMake defaults to a relative @rpath install name for the built
+          # dylib. darktable's packaging script (3_make_hb_darktable_package.sh)
+          # only bundles dependencies whose linked path literally contains the
+          # Homebrew prefix - a real Homebrew formula always has an absolute,
+          # prefix-rooted install name, but a plain `cmake --install` does not.
+          # With the default @rpath id, the packaging script's grep-based
+          # detection silently skips this library: the build and CI run both
+          # succeed, but the .dmg ships without libexiv2, crashing at launch
+          # on any machine that isn't the CI runner. Forcing an absolute,
+          # Homebrew-style install name here makes it indistinguishable from
+          # a real brew-built library so it gets bundled correctly.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=ON -DEXIV2_ENABLE_NLS=ON \
             -DEXIV2_ENABLE_VIDEO=OFF -DEXIV2_ENABLE_INIH=OFF \
+            -DCMAKE_MACOSX_RPATH=OFF \
+            -DCMAKE_INSTALL_NAME_DIR="$(brew --prefix)/lib" \
             -DCMAKE_INSTALL_PREFIX="$(brew --prefix)"
           cmake --build build
           cmake --install build
