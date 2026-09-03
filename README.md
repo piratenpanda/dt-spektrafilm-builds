@@ -6,26 +6,26 @@ Come work together! Feedback, issues, anything is welcome at [discuss.pixls.us](
 
 > **⚠️ HIGHLY EXPERIMENTAL** — back up your darktable data dir before testing: Linux `~/.config/darktable/`, macOS `~/Library/Application Support/darktable/`, Windows `%APPDATA%\darktable\`. Use `--library <path>` to keep your main setup safe.
 
-**Latest version:** 20260901-e88281a
+**Latest version:** 20260903-e75453c
 
 ## Latest Builds
 
 | Platform | Architecture | Download |
 |----------|-------------|----------|
-| Linux AppImage | x86_64 | [darktable-spektrafilm-20260901-e88281a-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-x86_64.AppImage) |
-| Linux AppImage | ARM64 | [darktable-spektrafilm-20260901-e88281a-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-aarch64.AppImage) |
-| Windows | x86_64 | [darktable-spektrafilm-20260901-e88281a-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-x86_64.exe) |
-| Windows | ARM64 | [darktable-spektrafilm-20260901-e88281a-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-x86_64.exe) |
-| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260901-e88281a-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260901-e88281a-arm64.dmg) |
+| Linux AppImage | x86_64 | [darktable-spektrafilm-20260903-e75453c-x86_64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260903-e75453c-x86_64.AppImage) |
+| Linux AppImage | ARM64 | [darktable-spektrafilm-20260903-e75453c-aarch64.AppImage](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260903-e75453c-aarch64.AppImage) |
+| Windows | x86_64 | [darktable-spektrafilm-20260903-e75453c-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260903-e75453c-x86_64.exe) |
+| Windows | ARM64 | [darktable-spektrafilm-20260903-e75453c-x86_64.exe](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260903-e75453c-x86_64.exe) |
+| macOS | ARM64 (Apple Silicon) | [darktable-spektrafilm-20260903-e75453c-arm64.dmg](https://github.com/piratenpanda/dt-spektrafilm-builds/releases/download/spektrafilm-builds/darktable-spektrafilm-20260903-e75453c-arm64.dmg) |
 
 ## Recent Commits
 
 | Date | Commit | Author | Message |
 |------|--------|--------|---------|
-| 2026-09-01 | [e88281a40](https://github.com/piratenpanda/darktable/commit/e88281a40) | piratenpanda | reorder presets |
-| 2026-08-31 | [7bfa6688b](https://github.com/piratenpanda/darktable/commit/7bfa6688b) | piratenpanda | opencl maintenance |
-| 2026-08-29 | [b66748021](https://github.com/piratenpanda/darktable/commit/b66748021) | piratenpanda | opencl: move spektrafilm.cl to program 43 |
-| 2026-08-28 | [cc4ea64e2](https://github.com/piratenpanda/darktable/commit/cc4ea64e2) | piratenpanda | initial presets |
+| 2026-09-03 | [e75453c86](https://github.com/piratenpanda/darktable/commit/e75453c86) | piratenpanda | add spektrafilm pixel workflow |
+| 2026-09-03 | [1ade92d36](https://github.com/piratenpanda/darktable/commit/1ade92d36) | piratenpanda | add gamut compression toggle |
+| 2026-09-03 | [cc60d69a1](https://github.com/piratenpanda/darktable/commit/cc60d69a1) | piratenpanda | add GTK4 code |
+| 2026-09-02 | [e7ea772f3](https://github.com/piratenpanda/darktable/commit/e7ea772f3) | piratenpanda | Spektrafilm analog film simulation module |
 
 ## Data pack
 
