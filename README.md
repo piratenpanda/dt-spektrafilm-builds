@@ -40,7 +40,5 @@ If you are upgrading from an older build, delete the `spektrafilm` folder from y
 
 > ** Current builds use ~/.local/share/darktable as the pack download directory on Linux. Other platforms accordingly.   
 
-Then:
-
-3. Open the spektrafilm module on a photo. If a data pack is missing, a **"download data pack"** button appears — click it and the module downloads the data pack it needs, verifying the download before it's used.
+Then open the spektrafilm module on a photo. If a data pack is missing, a **"download data pack"** button appears — click it and the module downloads the data pack it needs, verifying the download before it's used.
 
